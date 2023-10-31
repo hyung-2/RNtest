@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, Modal, SafeAreaView, StatusBar, Pressable, FlatList, Keyboard, TextInput } from 'react-native'
+import { View, StyleSheet, Text, Modal, SafeAreaView, StatusBar, Pressable, FlatList, Keyboard, TextInput, Image, Platform } from 'react-native'
 import { addData, getCollection, getCurrentTime } from "../apis/firebase";
+import { launchImageLibrary } from "react-native-image-picker";
 
 import ModalButton from '../components/ModalButton'
 import ModalInput from '../components/ModalInput'
 import UserList from "../components/UserList";
+import profileImg from '../assets/imgs/profile.png'
 
 import AntIcon from 'react-native-vector-icons/AntDesign'
 
@@ -15,6 +17,7 @@ function HomeScreen({navigation}){
   const [userEmail, setUserEmail] = useState('')
   const [userAdress, setUserAdress] = useState('')
   const [userLike, setUserLike] = useState('')
+  const [userImg, setUserImg] = useState('')
   const [userInfo, setUserInfo] = useState([])
   const [searchUser, setSearchUser] = useState('')
 
@@ -24,14 +27,12 @@ function HomeScreen({navigation}){
     setUserEmail('')
     setUserAdress('')
     setUserLike('')
+    setUserImg('')
   }
 
   //db에 유저정보 등록
   const plusData = async() => {
-    console.log('이름', userName)
-    console.log('이메일', userEmail)
-    console.log('거주지', userAdress)
-    console.log('관심사', userLike)
+    console.log('이름:', userName,'-','이메일', userEmail,'-','거주지', userAdress,'-','관심사', userLike)
     try{
       if(userName == '' && userEmail == '' && userAdress == '' && userLike == ''){
         console.log('빈칸을 입력해주세요')
@@ -43,6 +44,7 @@ function HomeScreen({navigation}){
           email: userEmail,
           address: userAdress,
           like: userLike,
+          profileImg: userImg,
           createdAt: getCurrentTime()
         }
         await addData('users', newUser)
@@ -51,6 +53,7 @@ function HomeScreen({navigation}){
         setUserEmail('')
         setUserAdress('')
         setUserLike('')
+        setUserImg('')
         setOpen(false)
       }
     }catch(err){
@@ -67,6 +70,22 @@ function HomeScreen({navigation}){
   //키보드숨기기
   const hideKeyboard = () => {
     Keyboard.dismiss()
+  }
+
+  //이미지 변경
+  const uploadProfileImg = () => {
+    launchImageLibrary({
+      mediaType: 'photo',
+      maxWidth: 512,
+      maxHeight: 512,
+      includeBase64: Platform.OS === 'android',
+    },
+    (data) => {
+      console.log(data)
+      if(data.didCancel) return
+      setUserImg(data)
+    }
+    )
   }
 
   //유저정보 불러오기
@@ -102,6 +121,17 @@ function HomeScreen({navigation}){
             <ModalInput title='이메일' setUserEmail={setUserEmail}/>
             <ModalInput title='거주지' setUserAdress={setUserAdress}/>
             <ModalInput title='관심사' setUserLike={setUserLike}/>
+            {userImg && userImg ? 
+              <Image source={{uri: userImg?.assets[0]?.uri}} style={styles.img}/>
+              :
+              <Image source={profileImg} style={styles.img}/>
+            }
+            <Pressable
+              style={[styles.ModalButton, styles.profileBtn]}
+              onPress={uploadProfileImg}
+            >
+              <Text style={styles.ModalButtonText}>프로필 사진 등록</Text>
+            </Pressable>
             <View style={styles.alignHorizontal}>
               <Pressable 
                 style={[styles.ModalButton, styles.ModalButtonClose]}
@@ -129,7 +159,7 @@ function HomeScreen({navigation}){
         blurOnSubmit={false}
       />
       <AntIcon name='search1' size={23} color='#fff' style={styles.icon}/>
-      <UserList userInfo={userInfo} navigation={navigation} searchUser={searchUser}/>
+      <UserList userInfo={userInfo} userImg={userImg} navigation={navigation} searchUser={searchUser}/>
       <ModalButton open={open} setOpen={setOpen} />
     </SafeAreaView>
   )
@@ -203,6 +233,16 @@ const styles = StyleSheet.create({
     padding: 13.5,
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
+  },
+  img: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  profileBtn: {
+    backgroundColor: '#E7BFFF',
+    width: 150,
+
   }
 })
 

@@ -26,10 +26,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container:{
-    height: 30,
-    backgroundColor: '(0, 0, 0, 0.1)',
-    opacity: 0
-  }
+    height: 25,
+    opacity: 0,
+    zIndex: 1,
+
+  },
 })
 
 export default UserList

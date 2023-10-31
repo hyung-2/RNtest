@@ -2,22 +2,27 @@ import React from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
 
 import AntIcon from 'react-native-vector-icons/AntDesign'
-import profileImg from '../assets/imgs/profile.png'
+import baseprofileImg from '../assets/imgs/profile.png'
 
-function UserItem({name, email, address, like, navigation, searchUser}){
+function UserItem({name, email, address, like, profileImg, navigation, searchUser}){
 
   // console.log(navigation)
+  console.log(profileImg)
 
   const onPress = () => {
-    console.log('다음!!!!!!!')
-    navigation.navigate('MoreInfo', {name, email, address, like})
+    navigation.navigate('MoreInfo', {name, email, address, like, profileImg})
   }
   if(searchUser){
     if(name.includes(searchUser) || email.includes(searchUser)){
       return(
         <View style={styles.container}>
           <View style={styles.ViewHorizontal}>
-            <Image source={profileImg} style={styles.profile}></Image>
+            {profileImg && profileImg ?
+              <Image source={{uri: profileImg?.assets[0]?.uri}} style={styles.profile}></Image>
+              :
+              <Image source={baseprofileImg} style={styles.profile}></Image>
+            }
+            <Image source={baseprofileImg} style={styles.profile}></Image>
             <View style={styles.userInfos}>
               <Text style={[styles.userInfoTexts, styles.name]}>{name}</Text>
               <Text style={styles.userInfoTexts}>{email}</Text>
@@ -31,7 +36,11 @@ function UserItem({name, email, address, like, navigation, searchUser}){
     return(
       <View style={styles.container}>
         <View style={styles.ViewHorizontal}>
-          <Image source={profileImg} style={styles.profile}></Image>
+        {profileImg && profileImg ?
+              <Image source={{uri: profileImg?.assets[0]?.uri}} style={styles.profile}></Image>
+              :
+              <Image source={baseprofileImg} style={styles.profile}></Image>
+            }
           <View style={styles.userInfos}>
             <Text style={[styles.userInfoTexts, styles.name]}>{name}</Text>
             <Text style={styles.userInfoTexts}>{email}</Text>
@@ -70,7 +79,8 @@ const styles = StyleSheet.create({
   moreInfoBtn: {
     position: 'absolute',
     right: 0,
-    marginRight: 10,
+    // marginRight: 10,
+    padding: 10,
   },
   name: {
     fontWeight: 'bold',

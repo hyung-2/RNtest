@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
 
 import AntIcon from 'react-native-vector-icons/AntDesign'
-import profileImg from '../assets/imgs/profile.png'
+import baseprofileImg from '../assets/imgs/profile.png'
 
 function MoreUserItem({navigation, route}){
 
@@ -15,7 +15,12 @@ function MoreUserItem({navigation, route}){
     <View style={styles.container}>
       <AntIcon name='left' size={20} onPress={onPress} style={styles.backBtn}/>
       <View style={styles.profileBox}>
-        <Image source={profileImg} style={styles.profile}/>
+        {/* {profileImg && profileImg? 
+          <Image source={route.params.profileImg?.assets[0]?.uri} style={styles.profile}/>
+          :
+          <Image source={baseprofileImg} style={styles.profile}/>
+        } */}
+        <Image source={baseprofileImg} style={styles.profile}/>
         <View style={styles.textBox}>
           <View style={styles.viewHorizontal}>
             <Text style={styles.titleText}>이름</Text>
