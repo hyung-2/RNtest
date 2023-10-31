@@ -15,12 +15,12 @@ function MoreUserItem({navigation, route}){
     <View style={styles.container}>
       <AntIcon name='left' size={20} onPress={onPress} style={styles.backBtn}/>
       <View style={styles.profileBox}>
-        {/* {profileImg && profileImg? 
+        {profileImg && profileImg? 
           <Image source={route.params.profileImg?.assets[0]?.uri} style={styles.profile}/>
           :
           <Image source={baseprofileImg} style={styles.profile}/>
-        } */}
-        <Image source={baseprofileImg} style={styles.profile}/>
+        }
+        {/* <Image source={baseprofileImg} style={styles.profile}/> */}
         <View style={styles.textBox}>
           <View style={styles.viewHorizontal}>
             <Text style={styles.titleText}>이름</Text>
